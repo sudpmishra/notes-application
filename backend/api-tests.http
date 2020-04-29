@@ -1,0 +1,17 @@
+@host = http://localhost
+@port = 4041
+@contentType= application/json
+###
+POST {{host}}:{{port}}/users/authenticate
+Content-Type: {{contentType}}
+Authorization: Basic bWlzaHJhOjEyMzQ=
+###
+
+POST {{host}}:{{port}}/users/add
+Content-Type: {{contentType}}
+
+{
+    "username": "mishra",
+    "password": "1234",
+    "fullname": "Sudeep Mishra"
+}
