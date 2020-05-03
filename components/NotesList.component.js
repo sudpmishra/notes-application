@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
 import {Avatar, Card, Paragraph, TouchableRipple} from 'react-native-paper';
 import MenuComponent from './Menu.component';
-import {withRouter} from 'react-router-native';
+import {useHistory} from 'react-router-native';
 
-const NotesList = ({history}) => {
+const NotesList = () => {
+  const history = useHistory();
   const [noteData, setNoteData] = useState([
     {
       id: '1',
@@ -74,11 +75,13 @@ const NotesList = ({history}) => {
     alert('TODO:PIN' + itemid);
   };
   const openItem = itemid => {
-    // alert('TODO:OPEN' + itemid);
-    history.push('/createUpdate');
-    console.log(history)
-    // console.log(history.location);
-    /**TODO */
+    // history.push('/createNote');
+    history.push({
+      pathname: '/createNote',
+      state: {
+        noteId: itemid,
+      },
+    });
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -163,4 +166,4 @@ const colors = {
   rippleColor: '#ddebf0',
 };
 
-export default withHistory(NotesList);
+export default NotesList;

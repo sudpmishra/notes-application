@@ -5,7 +5,7 @@ import SyncStorage from 'sync-storage';
 
 import SignIn from './components/SignIn.component';
 import Home, {HomeComponent} from './components/Home.component';
-import NewNote from './components/NewNote.component';
+import CreateNote from './components/CreateNote.component';
 import UserProfile from './components/UserProfile.component';
 
 class App extends React.Component {
@@ -29,9 +29,9 @@ class App extends React.Component {
         <PaperProvider>
           <NativeRouter>
             <Switch>
-              <Home path="/home" component={HomeComponent} />} />
+              <Home exact path="/home" component={HomeComponent} />} />
               <Route
-                path="/"
+                exact path="/"
                 render={props => (
                   <SignIn
                     {...props}
@@ -39,8 +39,8 @@ class App extends React.Component {
                   />
                 )}
               />
-              <Route path="/createUpdate" component={NewNote} />
-              {/* <Route path="/profile" component={UserProfile} /> */}
+              <Route exact path="/createNote" component={CreateNote} />
+              <Route exact path="/profile" component={UserProfile} />
             </Switch>
           </NativeRouter>
         </PaperProvider>
