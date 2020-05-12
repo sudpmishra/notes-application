@@ -7,6 +7,7 @@ import SignIn from './components/SignIn.component';
 import Home, {HomeComponent} from './components/Home.component';
 import CreateNote from './components/CreateNote.component';
 import UserProfile from './components/UserProfile.component';
+import EditNote from './components/EditNote.component';
 
 class App extends React.Component {
   constructor(props) {
@@ -31,7 +32,8 @@ class App extends React.Component {
             <Switch>
               <Home exact path="/home" component={HomeComponent} />} />
               <Route
-                exact path="/"
+                exact
+                path="/"
                 render={props => (
                   <SignIn
                     {...props}
@@ -40,6 +42,7 @@ class App extends React.Component {
                 )}
               />
               <Route exact path="/createNote" component={CreateNote} />
+              <Route exact path="/editNote" component={EditNote} />
               <Route exact path="/profile" component={UserProfile} />
             </Switch>
           </NativeRouter>

@@ -1,78 +1,74 @@
-import React, {useState} from 'react';
-import {FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
-import {Avatar, Card, Paragraph, TouchableRipple} from 'react-native-paper';
+import React, {useState, useEffect} from 'react';
+import {
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Alert,
+  Text,
+} from 'react-native';
+import {
+  Avatar,
+  Card,
+  Paragraph,
+  TouchableRipple,
+  IconButton,
+} from 'react-native-paper';
 import MenuComponent from './Menu.component';
-import {useHistory} from 'react-router-native';
+import {useHistory, Router} from 'react-router-native';
+import noteServices from './../services/Note.services';
+import syncStorage from 'sync-storage';
 
 const NotesList = () => {
   const history = useHistory();
-  const [noteData, setNoteData] = useState([
-    {
-      id: '1',
-      subtitle: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-      type: 'note',
-      pinned: false,
-      content:
-        'Do to be agreeable conveying oh assurance. Wicket longer admire do barton vanity itself do in it. Preferred to sportsmen it engrossed listening. Park gate sell they west hard for the. Abode stuff noisy manor blush yet the far. Up colonel so between removed so do. Years use place decay sex worth drift age. Men lasting out end article express fortune demands own charmed. About are are money ask how seven.',
-    },
-    {
-      id: '2',
-      subtitle: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-      type: 'list',
-      pinned: false,
-      content:
-        'Had denoting properly jointure you occasion directly raillery. In said to of poor full be post face snug. Introduced imprudence see say unpleasing devonshire acceptance son. Exeter longer wisdom gay nor design age. Am weather to entered norland no in showing service. Nor repeated speaking shy appetite. Excited it hastily an pasture it observe. Snug hand how dare here too. ',
-    },
-    {
-      id: '3',
-      subtitle: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-      type: 'note',
-      pinned: true,
-      content:
-        'Style never met and those among great. At no or september sportsmen he perfectly happiness attending. Depending listening delivered off new she procuring satisfied sex existence. Person plenty answer to exeter it if. Law use assistance especially resolution cultivated did out sentiments unsatiable. Way necessary had intention happiness but september delighted his curiosity. Furniture furnished or on strangers neglected remainder engrossed.',
-    },
-    {
-      id: '4',
-      subtitle: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-      type: 'note',
-      pinned: true,
-      content:
-        'Style never met and those among great. At no or september sportsmen he perfectly happiness attending. Depending listening delivered off new she procuring satisfied sex existence. Person plenty answer to exeter it if. Law use assistance especially resolution cultivated did out sentiments unsatiable. Way necessary had intention happiness but september delighted his curiosity. Furniture furnished or on strangers neglected remainder engrossed.',
-    },
-    {
-      id: '5',
-      subtitle: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-      type: 'note',
-      pinned: false,
-      content:
-        'Style never met and those among great. At no or september sportsmen he perfectly happiness attending. Depending listening delivered off new she procuring satisfied sex existence. Person plenty answer to exeter it if. Law use assistance especially resolution cultivated did out sentiments unsatiable. Way necessary had intention happiness but september delighted his curiosity. Furniture furnished or on strangers neglected remainder engrossed.',
-    },
-    {
-      id: '6',
-      subtitle: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-      type: 'note',
-      pinned: false,
-      content:
-        'Style never met and those among great. At no or september sportsmen he perfectly happiness attending. Depending listening delivered off new she procuring satisfied sex existence. Person plenty answer to exeter it if. Law use assistance especially resolution cultivated did out sentiments unsatiable. Way necessary had intention happiness but september delighted his curiosity. Furniture furnished or on strangers neglected remainder engrossed.',
-    },
-  ]);
+  const [isReloading, setIsReloading] = useState(true);
+  const [noteData, setNoteData] = useState([]);
+  useEffect(() => {
+    _reloadPage();
+  }, []);
+  const _reloadPage = () => {
+    setIsReloading(true);
+    const userDetails = syncStorage.get('userDetails');
+    result = noteServices('GET_NOTES', {userid: userDetails.username}).then(
+      res => {
+        setNoteData(res);
+        setIsReloading(false);
+      },
+    );
+  };
   const editItem = itemid => {
-    /**TODO */
-    alert('TODO:EDIT' + itemid);
+    history.push({
+      pathname: '/editNote',
+      state: {
+        noteId: itemid,
+      },
+    });
   };
   const deleteItem = itemid => {
-    /**TODO */
-    alert('TODO:DELETE' + itemid);
+    Alert.alert(
+      'Delete Note?',
+      'Are you sure, This process is irreversible?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => {
+            noteServices('DELETE_NOTE', {id: itemid});
+            _reloadPage();
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   };
-  const pinItem = itemid => {
-    /**TODO */
-    alert('TODO:PIN' + itemid);
+  const pinItem = (itemid, isPinned) => {
+    noteServices('PIN_NOTE', {_id: itemid, isPinned: isPinned}).then(res => {
+      _reloadPage();
+    });
   };
   const openItem = itemid => {
     // history.push('/createNote');
@@ -86,6 +82,8 @@ const NotesList = () => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
+        onRefresh={() => _reloadPage()}
+        refreshing={isReloading}
         data={noteData}
         renderItem={({item}) => (
           <EachItem
@@ -96,30 +94,55 @@ const NotesList = () => {
             openItem={openItem}
           />
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item._id}
       />
     </SafeAreaView>
   );
 };
 const EachItem = ({item, editItem, deleteItem, pinItem, openItem}) => {
+  const toDo = item.todoNotes === null ? false : true;
+  const renderNoteDesc = (todo, item) => {
+    let text = '';
+    if (todo) {
+      const maxtodos = item.todoNotes.length > 5 ? 5 : item.todoNotes.length;
+      let todoText = '';
+      for (var i = 0; i < maxtodos; i++) {
+        if (i == 0) {
+          todoText = item.todoNotes[i].isChecked
+            ? `▣ ${item.todoNotes[i].toDo}`
+            : `☐ ${item.todoNotes[i].toDo}`;
+        } else {
+          todoText = item.todoNotes[i].isChecked
+            ? `${todoText}, ▣ ${item.todoNotes[i].toDo}`
+            : `${todoText}, ☐ ${item.todoNotes[i].toDo}`;
+        }
+      }
+      text = todoText;
+    } else {
+      text = item.defaultNote;
+    }
+    return text.length > 75 ? text.substring(0, 74) + '...' : text;
+  };
+  const renderNote = <Paragraph>{renderNoteDesc(toDo, item)}</Paragraph>;
   return (
     <Card style={styles.item}>
       <TouchableRipple
         onPress={e => {
-          openItem(item.id);
+          openItem(item._id);
         }}
         rippleColor={colors.rippleColor}>
         <View style={styles.view}>
+          {item.pinned ? (
+            <Text style={styles.itemPinned}>📌</Text>
+          ) : (
+            <Text style={styles.itemPinned} />
+          )}
           <Card.Title
-            title={item.title}
+            title={item.noteHeader}
             left={props => (
               <Avatar.Icon
                 {...props}
-                icon={
-                  item.type === 'note'
-                    ? 'note-plus'
-                    : 'checkbox-multiple-marked'
-                }
+                icon={!toDo ? 'note-plus' : 'checkbox-multiple-marked'}
               />
             )}
             right={props => (
@@ -130,13 +153,11 @@ const EachItem = ({item, editItem, deleteItem, pinItem, openItem}) => {
                 deleteItem={deleteItem}
                 pinItem={pinItem}
                 isPinned={item.pinned}
-                itemId={item.id}
+                itemId={item._id}
               />
             )}
           />
-          <Card.Content>
-            <Paragraph>{item.content}</Paragraph>
-          </Card.Content>
+          <Card.Content>{renderNote}</Card.Content>
         </View>
       </TouchableRipple>
     </Card>
@@ -153,7 +174,17 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   item: {
+    position: 'relative',
     backgroundColor: '#F0F0F0',
+    padding: 0,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  itemPinned: {
+    position: 'absolute',
+    fontSize: 20,
+    top: -5,
+    right: -10,
     padding: 0,
     marginVertical: 8,
     marginHorizontal: 16,

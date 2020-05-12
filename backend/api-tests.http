@@ -15,3 +15,34 @@ Content-Type: {{contentType}}
     "password": "1234",
     "fullname": "Sudeep Mishra"
 }
+###
+POST {{host}}:{{port}}/notes/add
+Content-Type: {{contentType}}
+
+{ 
+    "noteHeader": "Test delete",
+    "type": "note",
+    "defaultNote": "null",
+    "todoNotes": null,
+    "userid": "mishra"
+}
+###
+GET {{host}}:{{port}}/notes/getNotesForUser?userid=mishra
+Content-Type: {{contentType}}
+###
+GET {{host}}:{{port}}/notes/getNoteById?id=5eb3da5a9db17a06c44bd3ae
+Content-Type: {{contentType}}
+###
+POST {{host}}:{{port}}/notes/pinNote?noteId=5eb3da5a9db17a06c44bd3ae&isPinned=true
+Content-Type: {{contentType}}
+###
+POST {{host}}:{{port}}/notes/edit
+Content-Type: {{contentType}}
+
+{ 
+    "_id":"5eb3da5a9db17a06c44bd3ae",
+    "noteHeader": "First Item Updated",
+    "type": "todo",
+    "defaultNote": "Test Update",
+    "todoNotes": null
+}

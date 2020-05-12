@@ -22,6 +22,7 @@ const MenuComponent = ({
       <Menu.Item
         icon="square-edit-outline"
         onPress={() => {
+          _toggleMenu();
           editItem(itemId);
         }}
         title="Edit"
@@ -29,6 +30,7 @@ const MenuComponent = ({
       <Menu.Item
         icon="delete-empty"
         onPress={() => {
+          _toggleMenu();
           deleteItem(itemId);
         }}
         title="Delete"
@@ -37,7 +39,8 @@ const MenuComponent = ({
         icon={isPinned ? 'pin-off' : 'pin'}
         title={isPinned ? 'Unpin' : 'Pin'}
         onPress={() => {
-          pinItem(itemId);
+          _toggleMenu();
+          pinItem(itemId, isPinned);
         }}
       />
     </Menu>

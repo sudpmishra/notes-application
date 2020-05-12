@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import {FAB, Portal} from 'react-native-paper';
+import {useHistory} from 'react-router-native';
 const FabButton = ({onLogoutPressed}) => {
   const [open, setOpen] = useState(false);
+  const history = useHistory();
   const _onStateChange = () => {
     const openState = open ? false : true;
     setOpen(openState);
@@ -17,16 +19,24 @@ const FabButton = ({onLogoutPressed}) => {
               icon: 'note-plus',
               label: 'Add Note',
               onPress: () => {
-                /**TODO */
-                console.log('Pressed add');
+                history.push({
+                  pathname: '/editNote',
+                  state: {
+                    noteType: 'note',
+                  },
+                });
               },
             },
             {
               icon: 'checkbox-multiple-marked',
               label: 'Add Checklist',
               onPress: () => {
-                /**TODO */
-                console.log('Pressed star');
+                history.push({
+                  pathname: '/editNote',
+                  state: {
+                    noteType: 'todo',
+                  },
+                });
               },
             },
             {

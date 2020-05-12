@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet, Text, View, TouchableHighlight} from 'react-native';
 
 import {TextInput, Snackbar} from 'react-native-paper';
-import userServices from './../services/user.services';
+import userServices from './../services/User.services';
 import auth from '../auth';
 import {Redirect} from 'react-router-native';
 
@@ -15,7 +15,6 @@ const SignIn = ({history, authenticated}) => {
       username: username,
       password: password,
     };
-    console.log(requestParams);
     let userDetails = await userServices('USER_AUTHENTICATE', requestParams);
     if (userDetails.status === 1) {
       auth.login(() => {
