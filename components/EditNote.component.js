@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Alert, ScrollView} from 'react-native';
+import {View, StyleSheet, Alert, ScrollView, BackHandler} from 'react-native';
 import noteServices from '../services/Note.services';
 import {Appbar, Card, TextInput, Checkbox, Button} from 'react-native-paper';
+import Colors from '../assets/colors';
 const EditNote = ({location, history}) => {
   const [note, setNote] = useState({
     pinned: false,
@@ -17,6 +18,15 @@ const EditNote = ({location, history}) => {
   const [todoNotes, settodoNotes] = useState([]);
   useEffect(() => {
     _reloadPage();
+  }, []);
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      history.goBack();
+      return true;
+    });
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress');
+    };
   }, []);
   const _reloadPage = () => {
     if (location.state.noteId !== undefined) {
@@ -92,24 +102,32 @@ const EditNote = ({location, history}) => {
           icon="content-save-edit"
           style={styles.backbutton}
           onPress={() => {
-            Alert.alert(
-              'Discard Note?',
-              'Are you sure, Your changes will be lost?',
-              [
-                {
-                  text: 'Cancel',
-                  onPress: () => console.log('Cancel Pressed'),
-                  style: 'cancel',
-                },
-                {
-                  text: 'OK',
-                  onPress: () => {
-                    _discardNote();
+            if (
+              note.noteHeader === noteHeader &&
+              note.todoNotes === todoNotes &&
+              note.defaultNote === defaultNote
+            ) {
+              _discardNote();
+            } else {
+              Alert.alert(
+                'Discard Note?',
+                'Are you sure, Your changes will be lost?',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
                   },
-                },
-              ],
-              {cancelable: false},
-            );
+                  {
+                    text: 'OK',
+                    onPress: () => {
+                      _discardNote();
+                    },
+                  },
+                ],
+                {cancelable: false},
+              );
+            }
           }}
         />
         <Appbar.Action
@@ -142,17 +160,6 @@ const EditNote = ({location, history}) => {
               todoNotes={todoNotes}
               settodoNotes={settodoNotes}
             />
-            <Button
-              icon="content-save-all"
-              mode="outlined"
-              style={styles.saveButton}
-              color="green"
-              labelStyle={styles.saveButtonContent}
-              onPress={() => {
-                _saveUpdateNote();
-              }}>
-              {isNewNote ? 'Create Note' : 'Update Note'}
-            </Button>
           </Card.Content>
         </Card>
       </ScrollView>
@@ -185,7 +192,7 @@ const ContentComponent = ({
           return (
             <View style={styles.checkboxes} key={`${obj.toDo}-${index}`}>
               <Checkbox.Android
-                color="green"
+                color={Colors.primary}
                 status={obj.isChecked ? 'checked' : 'unchecked'}
                 onPress={() => {
                   let list = [...todoNotes];
@@ -208,7 +215,7 @@ const ContentComponent = ({
         <Button
           icon="playlist-plus"
           mode="contained"
-          color="green"
+          color={Colors.primary}
           uppercase={false}
           style={styles.addNewButton}
           onPress={() => {
@@ -226,7 +233,7 @@ const styles = StyleSheet.create({
   appbar: {
     left: 0,
     right: 0,
-    backgroundColor: 'green',
+    backgroundColor: Colors.primary,
   },
   backbutton: {
     position: 'absolute',
@@ -251,7 +258,7 @@ const styles = StyleSheet.create({
   card: {
     padding: 5,
     margin: 5,
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOffset: {
       width: 0,
       height: 3,
@@ -275,20 +282,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   todoDesc: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.white,
     margin: 5,
     height: 40,
     width: '80%',
   },
   addNewButton: {
-    backgroundColor: 'green',
+    backgroundColor: Colors.primary,
     marginTop: 10,
   },
   saveButton: {
     marginTop: 10,
     borderRadius: 25,
     borderWidth: 2,
-    borderColor: 'green',
+    borderColor: Colors.primary,
     fontSize: 20,
   },
   saveButtonContent: {

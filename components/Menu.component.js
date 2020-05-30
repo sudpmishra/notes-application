@@ -18,7 +18,7 @@ const MenuComponent = ({
     <Menu
       visible={menuVisible}
       onDismiss={_toggleMenu}
-      anchor={<IconButton {...rest} icon="menu-open" onPress={_toggleMenu} />}>
+      anchor={<IconButton {...rest} icon="dots-vertical" onPress={_toggleMenu} />}>
       <Menu.Item
         icon="square-edit-outline"
         onPress={() => {

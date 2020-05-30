@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Button, StyleSheet} from 'react-native';
+import {View, Text, Button, StyleSheet, BackHandler} from 'react-native';
 import noteServices from '../services/Note.services';
 import {Appbar, Card, Paragraph, IconButton, Divider} from 'react-native-paper';
+import Colors from '../assets/colors';
 const CreateNote = ({location, history, isEdit = false}) => {
   const [note, setNote] = useState({
     pinned: false,
@@ -14,6 +15,15 @@ const CreateNote = ({location, history, isEdit = false}) => {
   });
   useEffect(() => {
     _reloadPage();
+  }, []);
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      history.goBack();
+      return true;
+    });
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress');
+    };
   }, []);
   const editNote = noteid => {
     history.push({
@@ -67,7 +77,7 @@ const CreateNote = ({location, history, isEdit = false}) => {
         />
         <Appbar.Action
           icon="pin"
-          color={note.pinned ? 'red' : 'white'}
+          color={note.pinned ? Colors.danger : Colors.black}
           onPress={() => {
             noteServices('PIN_NOTE', {_id: note._id, isPinned: note.pinned});
             _reloadPage();
@@ -100,7 +110,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     position: 'absolute',
-    backgroundColor: 'green',
+    backgroundColor: Colors.primary,
   },
   backbutton: {
     position: 'absolute',
@@ -126,7 +136,7 @@ const styles = StyleSheet.create({
     padding: 5,
     margin: 5,
     marginTop: 60,
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOffset: {
       width: 0,
       height: 3,

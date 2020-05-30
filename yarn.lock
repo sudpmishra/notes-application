@@ -5150,6 +5150,11 @@ react-router@5.1.2:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
+react-select-country-list@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/react-select-country-list/-/react-select-country-list-2.1.2.tgz#c46341bb845e95ecf3e89144422ec40b66a8d23d"
+  integrity sha512-05D09+sK/51u3LI0+UkS0ZcDS/jsrHtv2b0zoIwJAkjXSmu7xCIt3wdUfCmvDNsqQP8GClzCGiwYPcGg8Qnkuw==
+
 react-test-renderer@16.11.0:
   version "16.11.0"
   resolved "https://registry.yarnpkg.com/react-test-renderer/-/react-test-renderer-16.11.0.tgz#72574566496462c808ac449b0287a4c0a1a7d8f8"

@@ -18,6 +18,7 @@ import MenuComponent from './Menu.component';
 import {useHistory, Router} from 'react-router-native';
 import noteServices from './../services/Note.services';
 import syncStorage from 'sync-storage';
+import Colors from '../assets/colors';
 
 const NotesList = () => {
   const history = useHistory();
@@ -71,7 +72,6 @@ const NotesList = () => {
     });
   };
   const openItem = itemid => {
-    // history.push('/createNote');
     history.push({
       pathname: '/createNote',
       state: {
@@ -130,10 +130,15 @@ const EachItem = ({item, editItem, deleteItem, pinItem, openItem}) => {
         onPress={e => {
           openItem(item._id);
         }}
-        rippleColor={colors.rippleColor}>
+        rippleColor={Colors.secondary}>
         <View style={styles.view}>
           {item.pinned ? (
-            <Text style={styles.itemPinned}>📌</Text>
+            <IconButton
+              style={styles.itemPinned}
+              icon="circle-slice-8"
+              size={20}
+              color={Colors.danger}
+            />
           ) : (
             <Text style={styles.itemPinned} />
           )}
@@ -148,7 +153,7 @@ const EachItem = ({item, editItem, deleteItem, pinItem, openItem}) => {
             right={props => (
               <MenuComponent
                 {...props}
-                icon="menu-open"
+                icon="dots-vertical"
                 editItem={editItem}
                 deleteItem={deleteItem}
                 pinItem={pinItem}
@@ -175,7 +180,7 @@ const styles = StyleSheet.create({
   },
   item: {
     position: 'relative',
-    backgroundColor: '#F0F0F0',
+    backgroundColor: Colors.background,
     padding: 0,
     marginVertical: 8,
     marginHorizontal: 16,
@@ -184,7 +189,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     fontSize: 20,
     top: -5,
-    right: -10,
+    left: '48%',
     padding: 0,
     marginVertical: 8,
     marginHorizontal: 16,
@@ -193,8 +198,5 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
 });
-const colors = {
-  rippleColor: '#ddebf0',
-};
 
 export default NotesList;

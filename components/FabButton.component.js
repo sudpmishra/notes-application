@@ -43,8 +43,7 @@ const FabButton = ({onLogoutPressed}) => {
               icon: 'face-profile',
               label: 'User Profile',
               onPress: () => {
-                /**TODO */
-                console.log('Pressed email');
+                history.push('/profile');
               },
             },
             {

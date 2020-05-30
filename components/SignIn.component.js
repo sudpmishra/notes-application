@@ -1,15 +1,23 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {StyleSheet, Text, View, TouchableHighlight} from 'react-native';
 
 import {TextInput, Snackbar} from 'react-native-paper';
 import userServices from './../services/User.services';
 import auth from '../auth';
 import {Redirect} from 'react-router-native';
+import Colors from '../assets/colors';
 
 const SignIn = ({history, authenticated}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [snackbarVisibility, setSnackbarVisibility] = useState(false);
+  const passwordInputRef = useRef(null);
+  if (
+    history.location.isAuthenticated != null &&
+    history.location.isAuthenticated != undefined
+  )
+    authenticated = history.location.isAuthenticated;
+
   const onLoginPressed = async e => {
     const requestParams = {
       username: username,
@@ -32,12 +40,10 @@ const SignIn = ({history, authenticated}) => {
     auth.setUserDetails(details);
   };
   const onForgotPasswordPressed = e => {
-    /**TODO */
-    alert('Forgot Password Pressed');
+    history.push('/passwordReset');
   };
   const onRegisterPressed = e => {
-    /**TODO */
-    alert('Register Pressed');
+    history.push('/register');
   };
 
   if (authenticated) {
@@ -51,11 +57,15 @@ const SignIn = ({history, authenticated}) => {
             value={username}
             label="User-Id"
             onChangeText={email => setUsername(email)}
+            onSubmitEditing={() => {
+              passwordInputRef.current.focus();
+            }}
           />
         </View>
 
         <View style={styles.inputContainer}>
           <TextInput
+            ref={passwordInputRef}
             style={styles.inputs}
             value={password}
             secureTextEntry={true}
@@ -66,7 +76,7 @@ const SignIn = ({history, authenticated}) => {
 
         <TouchableHighlight
           style={[styles.buttonContainer, styles.loginButton]}
-          underlayColor="#0066ff"
+          underlayColor={Colors.accent}
           onPress={e => {
             onLoginPressed(e);
           }}>
@@ -75,7 +85,7 @@ const SignIn = ({history, authenticated}) => {
 
         <TouchableHighlight
           style={styles.buttonContainer}
-          underlayColor="#ff1a1a"
+          underlayColor={Colors.danger}
           onPress={e => {
             onForgotPasswordPressed(e);
           }}>
@@ -84,7 +94,7 @@ const SignIn = ({history, authenticated}) => {
 
         <TouchableHighlight
           style={styles.buttonContainer}
-          underlayColor="#ff9933"
+          underlayColor={Colors.secondary}
           onPress={e => {
             onRegisterPressed(e);
           }}>
@@ -112,13 +122,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#DCDCDC',
+    backgroundColor: Colors.background,
   },
   inputContainer: {
-    borderBottomColor: '#F5FCFF',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 30,
-    borderBottomWidth: 1,
     width: 250,
     height: 45,
     marginBottom: 20,
@@ -127,14 +133,7 @@ const styles = StyleSheet.create({
   },
   inputs: {
     height: 45,
-    borderBottomColor: '#FFFFFF',
     flex: 1,
-  },
-  inputIcon: {
-    width: 30,
-    height: 30,
-    marginLeft: 15,
-    justifyContent: 'center',
   },
   buttonContainer: {
     height: 45,
@@ -146,10 +145,10 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   loginButton: {
-    backgroundColor: '#006622',
+    backgroundColor: Colors.primary,
   },
   loginText: {
-    color: 'white',
+    color: Colors.black,
   },
 });
 export default SignIn;

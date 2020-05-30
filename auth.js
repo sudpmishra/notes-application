@@ -12,7 +12,7 @@ class Auth {
     logout(cb) {
         this.authenticated = false;
         this.setLocalStorage('authenticated', false);
-        cb()
+        cb();
     }
     isAuthenticated() {
         return this.authenticated;

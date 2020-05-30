@@ -1,2 +1,2 @@
-const basePath = "http://192.168.0.106:4041"
+const basePath = 'https://todo-server-sudeep.herokuapp.com';
 export default basePath;

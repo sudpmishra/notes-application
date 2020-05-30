@@ -8,7 +8,7 @@ import NotesList from './../components/NotesList.component';
 const HomeComponent = ({history}) => {
   const onLogoutPressed = () => {
     auth.logout(() => {
-      history.replace('/');
+      history.replace({pathname: '/', isAuthenticated: false});
     });
   };
   return (
@@ -31,9 +31,6 @@ const Home = ({component: Component, ...rest}) => {
             <Redirect
               to={{
                 pathname: '/',
-                state: {
-                  from: props.location,
-                },
               }}
             />
           );

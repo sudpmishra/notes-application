@@ -28,12 +28,12 @@ const _getNote = params => {
   }).then(res => res.json());
 };
 const _newNote = params => {
+  var myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'application/json');
   return fetch(`${_noteBasePath}add`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: params,
+    headers: headers,
+    body: JSON.stringify(params),
   }).then(res => {
     res.json();
   });
